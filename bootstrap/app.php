@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\EnsureUserCanManagePayments;
+use App\Http\Middleware\EnsureUserCanManageVehicles;
+use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,8 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'can.manage.vehicles' => \App\Http\Middleware\EnsureUserCanManageVehicles::class,
-            'admin.only' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'can.manage.vehicles' => EnsureUserCanManageVehicles::class,
+            'can.manage.payments' => EnsureUserCanManagePayments::class,
+            'admin.only' => EnsureUserIsAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

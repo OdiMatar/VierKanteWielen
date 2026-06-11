@@ -24,6 +24,9 @@
                         <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('home') }}">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('lesrijpakketten.index') }}">Lespakketten Overzicht</a></li>
                         <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('instructeurs.index') }}">Instructeurs</a></li>
+                        @if (auth()->user()->canManagePayments())
+                            <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('betalingen.index') }}">Betalingen</a></li>
+                        @endif
                         @if (auth()->user()->role === 'administrator')
                             <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('accounts.index') }}">Accounts</a></li>
                         @endif
@@ -51,6 +54,10 @@
     <main class="container py-4">
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if ($errors->has('Betaling'))
+            <div class="alert alert-danger">{{ $errors->first('Betaling') }}</div>
         @endif
 
         {{ $slot }}

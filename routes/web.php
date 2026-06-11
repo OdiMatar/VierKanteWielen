@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BetalingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstructeurController;
-use App\Http\Controllers\VoertuigController;
 use App\Http\Controllers\LesrijpakketController;
+use App\Http\Controllers\VoertuigController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function (): void {
@@ -27,6 +28,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/lespakketten', [LesrijpakketController::class, 'index'])->name('lesrijpakketten.index');
     Route::get('/instructeurs', [InstructeurController::class, 'index'])->name('instructeurs.index');
     Route::get('/instructeurs/{instructeur}/voertuigen', [VoertuigController::class, 'index'])->name('instructeurs.voertuigen.index');
+    Route::middleware('can.manage.payments')->group(function (): void {
+        Route::get('/betalingen', [BetalingController::class, 'index'])->name('betalingen.index');
+        Route::post('/betalingen', [BetalingController::class, 'store'])->name('betalingen.store');
+    });
 
     Route::middleware('can.manage.vehicles')->group(function (): void {
         Route::get('/instructeurs/{instructeur}/voertuigen/beschikbaar', [VoertuigController::class, 'beschikbaar'])->name('instructeurs.voertuigen.beschikbaar');

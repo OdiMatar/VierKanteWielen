@@ -34,4 +34,9 @@ class User extends Authenticatable
     {
         return $this->role === 'administrator';
     }
+
+    public function canManagePayments(): bool
+    {
+        return in_array($this->role, ['administrator', 'instructeur'], true);
+    }
 }

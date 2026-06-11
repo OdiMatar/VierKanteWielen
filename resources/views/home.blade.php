@@ -11,6 +11,9 @@
                     <div class="home-hero-actions">
                         <a class="btn btn-home-primary" href="{{ route('lesrijpakketten.index') }}">Bekijk Lespakketten</a>
                         <a class="btn btn-home-ghost" href="{{ route('instructeurs.index') }}">Ga Naar Instructeurs</a>
+                        @if (auth()->user()->canManagePayments())
+                            <a class="btn btn-home-ghost" href="{{ route('betalingen.index') }}">Betalingen</a>
+                        @endif
                     </div>
                 </div>
                 <div class="home-hero-panel">
@@ -30,8 +33,8 @@
         <section class="home-stats">
             <article class="home-stat-card">
                 <span>Modules</span>
-                <strong>3</strong>
-                <p>Lespakketten, voertuigen en accounts</p>
+                <strong>4</strong>
+                <p>Lespakketten, voertuigen, betalingen en accounts</p>
             </article>
             <article class="home-stat-card">
                 <span>Status</span>
@@ -56,6 +59,12 @@
                 <h2>Instructeurs & Voertuigen</h2>
                 <p>Bekijk per instructeur welke voertuigen al gekoppeld zijn en welke beschikbaar zijn.</p>
                 <a href="{{ route('instructeurs.index') }}">Bekijk instructeurs</a>
+            </article>
+
+            <article class="home-feature-card">
+                <h2>Betalingen</h2>
+                <p>Registreer betalingen en bekijk bedragen, betaalmethodes, statussen en redenen.</p>
+                <a href="{{ route('betalingen.index') }}">Open betalingen</a>
             </article>
 
             <article class="home-feature-card">
