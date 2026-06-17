@@ -38,10 +38,16 @@ class BetalingController extends Controller
 
         return view('betalingen.index', [
             'betalingen' => $betalingen,
+            'zoekterm' => $zoekterm,
+        ]);
+    }
+
+    public function create(): View
+    {
+        return view('betalingen.create', [
             'klanten' => $this->getKlanten(),
             'betaalmethodes' => $this->betaalmethodes(),
             'statussen' => $this->statussen(),
-            'zoekterm' => $zoekterm,
         ]);
     }
 

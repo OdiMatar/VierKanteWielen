@@ -381,6 +381,21 @@ h3,
     line-height: 1;
 }
 
+.payments-header-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+.payments-new-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+    border-radius: 0.75rem;
+    font-weight: 800;
+}
+
 .payments-panel,
 .payments-toolbar,
 .payments-table-wrap {
@@ -405,6 +420,10 @@ h3,
 .payments-panel-heading h2 {
     margin: 0;
     font-size: 1rem;
+}
+
+.payments-create-panel {
+    max-width: 920px;
 }
 
 .payments-panel .form-label,
@@ -585,6 +604,10 @@ h3,
     }
 
     .payments-header {
+        flex-direction: column;
+    }
+
+    .payments-header-actions {
         flex-direction: column;
     }
 
