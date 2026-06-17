@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -17,13 +18,8 @@ class Account extends Model
     public static function allViaStoredProcedure(): Collection
     {
         try {
-            // Haal alle accounts op voor het overzicht.
-            $accounts = self::query()
-                ->select(['id', 'name', 'email', 'role', 'created_at'])
-                ->orderByDesc('created_at')
-                ->get();
+            $accounts = self::accountsOverzicht();
 
-            // Log een simpele succesmelding met het aantal records.
             self::accountLogger()->info('Accounts succesvol opgehaald.', [
                 'count' => $accounts->count(),
             ]);
@@ -39,6 +35,18 @@ class Account extends Model
 
             return collect();
         }
+    }
+
+    private static function accountsOverzicht(): Collection
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return self::query()
+                ->select(['id', 'name', 'email', 'role', 'created_at'])
+                ->orderByDesc('created_at')
+                ->get();
+        }
+
+        return collect(DB::select('CALL sp_get_accounts_overzicht()'));
     }
 
     private static function accountLogger(): LoggerInterface

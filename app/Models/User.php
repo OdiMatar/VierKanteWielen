@@ -32,11 +32,16 @@ class User extends Authenticatable
 
     public function canManageVehicles(): bool
     {
-        return $this->role === 'administrator';
+        return $this->isAdministrator();
     }
 
     public function canManagePayments(): bool
     {
-        return in_array($this->role, ['administrator', 'instructeur'], true);
+        return $this->isAdministrator() || $this->role === 'instructeur';
+    }
+
+    public function isAdministrator(): bool
+    {
+        return in_array($this->role, ['administrator', 'admin'], true);
     }
 }

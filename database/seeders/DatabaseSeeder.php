@@ -8,6 +8,7 @@ use App\Models\Voertuig;
 use App\Models\VoertuigInstructeur;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(AccountSeeder::class);
+        $this->call(BetalingSeeder::class);
 
         TypeVoertuig::insert([
             ['Id' => 1, 'TypeVoertuig' => 'Personenauto', 'Rijbewijscategorie' => 'B', 'IsActief' => true],
@@ -60,7 +62,7 @@ class DatabaseSeeder extends Seeder
             ['Id' => 7, 'VoertuigId' => 2, 'InstructeurId' => 5, 'DatumToekenning' => '2020-03-12', 'IsActief' => true],
         ]);
 
-        \Illuminate\Support\Facades\DB::table('lesrijpakkets')->insert([
+        DB::table('lesrijpakkets')->insert([
             [
                 'Naam' => 'Basis Pakket',
                 'Beschrijving' => 'Perfecte start voor beginners. Dit pakket bevat de fundamentele rijlessen voor leerlingrijders.',
@@ -117,5 +119,6 @@ class DatabaseSeeder extends Seeder
                 'DatumGewijzigd' => now(),
             ],
         ]);
+
     }
 }

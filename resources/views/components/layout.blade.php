@@ -27,7 +27,7 @@
                         @if (auth()->user()->canManagePayments())
                             <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('betalingen.index') }}">Betalingen</a></li>
                         @endif
-                        @if (auth()->user()->role === 'administrator')
+                        @if (auth()->user()->isAdministrator())
                             <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('accounts.index') }}">Accounts</a></li>
                         @endif
                     @else
@@ -56,8 +56,8 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        @if ($errors->has('Betaling'))
-            <div class="alert alert-danger">{{ $errors->first('Betaling') }}</div>
+        @if ($errors->has('Betaling') || $errors->has('Voertuig'))
+            <div class="alert alert-danger">{{ $errors->first('Betaling') ?: $errors->first('Voertuig') }}</div>
         @endif
 
         {{ $slot }}
