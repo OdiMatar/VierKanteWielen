@@ -15,7 +15,7 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()?->role !== 'administrator') {
+        if (! $request->user()?->isAdministrator()) {
             abort(403, 'Alleen administrators hebben toegang tot accounts.');
         }
 

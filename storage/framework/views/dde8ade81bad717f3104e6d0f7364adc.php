@@ -24,7 +24,10 @@
                         <li class="nav-item"><a class="nav-link app-nav-link" href="<?php echo e(route('home')); ?>">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link app-nav-link" href="<?php echo e(route('lesrijpakketten.index')); ?>">Lespakketten Overzicht</a></li>
                         <li class="nav-item"><a class="nav-link app-nav-link" href="<?php echo e(route('instructeurs.index')); ?>">Instructeurs</a></li>
-                        <?php if(auth()->user()->role === 'administrator'): ?>
+                        <?php if(auth()->user()->canManagePayments()): ?>
+                            <li class="nav-item"><a class="nav-link app-nav-link" href="<?php echo e(route('betalingen.index')); ?>">Betalingen</a></li>
+                        <?php endif; ?>
+                        <?php if(auth()->user()->isAdministrator()): ?>
                             <li class="nav-item"><a class="nav-link app-nav-link" href="<?php echo e(route('accounts.index')); ?>">Accounts</a></li>
                         <?php endif; ?>
                     <?php else: ?>
@@ -51,6 +54,10 @@
     <main class="container py-4">
         <?php if(session('success')): ?>
             <div class="alert alert-success"><?php echo e(session('success')); ?></div>
+        <?php endif; ?>
+
+        <?php if($errors->has('Betaling')): ?>
+            <div class="alert alert-danger"><?php echo e($errors->first('Betaling')); ?></div>
         <?php endif; ?>
 
         <?php echo e($slot); ?>

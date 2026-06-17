@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,17 +50,27 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'email', 'max:255'],
             'role' => ['required', Rule::in(['administrator', 'instructeur', 'leerling'])],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = User::create($data);
+        $result = Account::createViaStoredProcedure($data);
+
+        if (! $result['success']) {
+            return back()
+                ->withErrors(['email' => $result['message']])
+                ->withInput($request->except(['password', 'password_confirmation']));
+        }
+
+        $user = User::findOrFail($result['account_id']);
 
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('home');
+        return redirect()
+            ->route('home')
+            ->with('success', $result['message']);
     }
 
     public function logout(Request $request): RedirectResponse

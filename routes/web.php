@@ -24,6 +24,12 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/accounts', [AccountController::class, 'index'])
         ->middleware('admin.only')
         ->name('accounts.index');
+    Route::get('/accounts/aanmaken', [AccountController::class, 'create'])
+        ->middleware('admin.only')
+        ->name('accounts.create');
+    Route::post('/accounts', [AccountController::class, 'store'])
+        ->middleware('admin.only')
+        ->name('accounts.store');
 
     Route::get('/lespakketten', [LesrijpakketController::class, 'index'])->name('lesrijpakketten.index');
     Route::get('/instructeurs', [InstructeurController::class, 'index'])->name('instructeurs.index');

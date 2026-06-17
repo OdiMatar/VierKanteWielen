@@ -27,7 +27,7 @@
                         @if (auth()->user()->canManagePayments())
                             <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('betalingen.index') }}">Betalingen</a></li>
                         @endif
-                        @if (auth()->user()->role === 'administrator')
+                        @if (auth()->user()->isAdministrator())
                             <li class="nav-item"><a class="nav-link app-nav-link" href="{{ route('accounts.index') }}">Accounts</a></li>
                         @endif
                     @else

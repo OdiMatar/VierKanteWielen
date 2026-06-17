@@ -70,7 +70,7 @@
             <article class="home-feature-card">
                 <h2>Jouw rolrechten</h2>
                 <p>
-                    @if (auth()->user()->canManageVehicles())
+                    @if (auth()->user()->isAdministrator())
                         Als administrator kun je direct voertuiggegevens aanpassen.
                     @else
                         Als instructeur heb je leesrechten voor de operationele data.

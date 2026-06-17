@@ -4,6 +4,7 @@
             <h1 class="h3 mb-1">Accounts</h1>
             <p class="text-muted mb-0">Overzicht van alle geregistreerde accounts.</p>
         </div>
+        <a class="btn btn-primary" href="{{ route('accounts.create') }}">Account aanmaken</a>
     </section>
 
     @if ($accounts->count() === 1 && $accounts->first()->role === 'administrator')
