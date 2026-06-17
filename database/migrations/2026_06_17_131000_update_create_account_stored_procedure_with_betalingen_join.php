@@ -7,35 +7,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // De procedures zijn alleen nodig voor MySQL.
         if (DB::getDriverName() !== 'mysql') {
             return;
         }
 
-        // Maak de procedure voor het accountoverzicht opnieuw aan.
-        DB::unprepared(<<<'SQL'
-DROP PROCEDURE IF EXISTS sp_get_accounts_overzicht;
-CREATE PROCEDURE sp_get_accounts_overzicht()
-BEGIN
-    SELECT
-        u.id,
-        u.name,
-        u.email,
-        u.role,
-        u.created_at,
-        COUNT(b.Id) AS aantal_betalingen,
-        COALESCE(SUM(b.Bedrag), 0) AS totaal_betaald,
-        COALESCE(SUM(CASE WHEN b.Status = 'Open' THEN b.Bedrag ELSE 0 END), 0) AS openstaand_bedrag
-    FROM users AS u
-    LEFT JOIN betalingen AS b
-        ON b.KlantId = u.id
-        AND b.IsActief = 1
-    GROUP BY u.id, u.name, u.email, u.role, u.created_at
-    ORDER BY u.created_at DESC;
-END
-SQL);
-
-        // Maak de procedure voor het toevoegen van accounts opnieuw aan.
         DB::unprepared(<<<'SQL'
 DROP PROCEDURE IF EXISTS sp_create_account;
 CREATE PROCEDURE sp_create_account(
@@ -75,13 +50,28 @@ SQL);
 
     public function down(): void
     {
-        // Sla opruimen over als de database geen MySQL is.
         if (DB::getDriverName() !== 'mysql') {
             return;
         }
 
-        // Verwijder de accountprocedures bij rollback.
-        DB::unprepared('DROP PROCEDURE IF EXISTS sp_create_account');
-        DB::unprepared('DROP PROCEDURE IF EXISTS sp_get_accounts_overzicht');
+        DB::unprepared(<<<'SQL'
+DROP PROCEDURE IF EXISTS sp_create_account;
+CREATE PROCEDURE sp_create_account(
+    IN p_name VARCHAR(255),
+    IN p_email VARCHAR(255),
+    IN p_role VARCHAR(20),
+    IN p_password VARCHAR(255)
+)
+BEGIN
+    IF EXISTS (SELECT 1 FROM users WHERE email = p_email) THEN
+        SELECT 0 AS success, 'deze email is al in gebruik' AS message, NULL AS account_id;
+    ELSE
+        INSERT INTO users (name, email, role, password, created_at, updated_at)
+        VALUES (p_name, p_email, p_role, p_password, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+        SELECT 1 AS success, 'account is toegevoegd' AS message, LAST_INSERT_ID() AS account_id;
+    END IF;
+END
+SQL);
     }
 };

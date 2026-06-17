@@ -153,9 +153,21 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS sp_get_accounts_overzicht $$
 CREATE PROCEDURE sp_get_accounts_overzicht()
 BEGIN
-    SELECT id, name, email, role, created_at
-    FROM users
-    ORDER BY created_at DESC;
+    SELECT
+        u.id,
+        u.name,
+        u.email,
+        u.role,
+        u.created_at,
+        COUNT(b.Id) AS aantal_betalingen,
+        COALESCE(SUM(b.Bedrag), 0) AS totaal_betaald,
+        COALESCE(SUM(CASE WHEN b.Status = 'Open' THEN b.Bedrag ELSE 0 END), 0) AS openstaand_bedrag
+    FROM users AS u
+    LEFT JOIN betalingen AS b
+        ON b.KlantId = u.id
+        AND b.IsActief = 1
+    GROUP BY u.id, u.name, u.email, u.role, u.created_at
+    ORDER BY u.created_at DESC;
 END $$
 
 DROP PROCEDURE IF EXISTS sp_create_account $$
@@ -172,7 +184,23 @@ BEGIN
         INSERT INTO users (name, email, role, password, created_at, updated_at)
         VALUES (p_name, p_email, p_role, p_password, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-        SELECT 1 AS success, 'account is toegevoegd' AS message, LAST_INSERT_ID() AS account_id;
+        SELECT
+            1 AS success,
+            'account is toegevoegd' AS message,
+            u.id AS account_id,
+            u.name,
+            u.email,
+            u.role,
+            u.created_at,
+            COUNT(b.Id) AS aantal_betalingen,
+            COALESCE(SUM(b.Bedrag), 0) AS totaal_betaald,
+            COALESCE(SUM(CASE WHEN b.Status = 'Open' THEN b.Bedrag ELSE 0 END), 0) AS openstaand_bedrag
+        FROM users AS u
+        LEFT JOIN betalingen AS b
+            ON b.KlantId = u.id
+            AND b.IsActief = 1
+        WHERE u.id = LAST_INSERT_ID()
+        GROUP BY u.id, u.name, u.email, u.role, u.created_at;
     END IF;
 END $$
 

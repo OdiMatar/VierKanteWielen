@@ -24,9 +24,23 @@ class Account extends Model
             // Gebruik MySQL procedures als die beschikbaar zijn.
             $accounts = DB::getDriverName() === 'mysql'
                 ? collect(DB::select('CALL sp_get_accounts_overzicht()'))
-                : self::query()
-                    ->select(['id', 'name', 'email', 'role', 'created_at'])
-                    ->orderByDesc('created_at')
+                : DB::table('users as u')
+                    ->select([
+                        'u.id',
+                        'u.name',
+                        'u.email',
+                        'u.role',
+                        'u.created_at',
+                        DB::raw('COUNT(b.Id) as aantal_betalingen'),
+                        DB::raw('COALESCE(SUM(b.Bedrag), 0) as totaal_betaald'),
+                        DB::raw("COALESCE(SUM(CASE WHEN b.Status = 'Open' THEN b.Bedrag ELSE 0 END), 0) as openstaand_bedrag"),
+                    ])
+                    ->leftJoin('betalingen as b', function ($join): void {
+                        $join->on('b.KlantId', '=', 'u.id')
+                            ->where('b.IsActief', 1);
+                    })
+                    ->groupBy('u.id', 'u.name', 'u.email', 'u.role', 'u.created_at')
+                    ->orderByDesc('u.created_at')
                     ->get();
 
             // Log een simpele succesmelding met het aantal records.

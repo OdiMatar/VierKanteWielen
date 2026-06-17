@@ -21,6 +21,9 @@
                     <th>Naam</th>
                     <th>E-mailadres</th>
                     <th>Rol</th>
+                    <th>Betalingen</th>
+                    <th>Totaal</th>
+                    <th>Openstaand</th>
                     <th>Geregistreerd op</th>
                 </tr>
             </thead>
@@ -31,6 +34,9 @@
                         <td class="fw-bold text-dark">{{ $account->name }}</td>
                         <td>{{ $account->email }}</td>
                         <td><span class="data-pill">{{ ucfirst($account->role) }}</span></td>
+                        <td>{{ $account->aantal_betalingen ?? 0 }}</td>
+                        <td>EUR {{ number_format((float) ($account->totaal_betaald ?? 0), 2, ',', '.') }}</td>
+                        <td>EUR {{ number_format((float) ($account->openstaand_bedrag ?? 0), 2, ',', '.') }}</td>
                         <td>{{ \Illuminate\Support\Carbon::parse($account->created_at)->format('d-m-Y H:i') }}</td>
                     </tr>
                 @endforeach
