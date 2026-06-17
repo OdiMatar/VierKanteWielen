@@ -35,5 +35,39 @@ class AccountSeeder extends Seeder
             'role' => 'leerling',
         ]);
 
+        User::create([
+            'name' => 'Sanne Jansen',
+            'email' => 'sanne.jansen@autorijschool.test',
+            'password' => 'password',
+            'role' => 'leerling',
+        ]);
+
+        User::create([
+            'name' => 'Yassin El Amrani',
+            'email' => 'yassin.elamrani@autorijschool.test',
+            'password' => 'password',
+            'role' => 'leerling',
+        ]);
+
+        User::create([
+            'name' => 'Noor de Vries',
+            'email' => 'noor.devries@autorijschool.test',
+            'password' => 'password',
+            'role' => 'leerling',
+        ]);
+
+        User::create([
+            'name' => 'Milan Bakker',
+            'email' => 'milan.bakker@autorijschool.test',
+            'password' => 'password',
+            'role' => 'leerling',
+        ]);
+
+        User::create([
+            'name' => 'Emma Vermeer',
+            'email' => 'emma.vermeer@autorijschool.test',
+            'password' => 'password',
+            'role' => 'leerling',
+        ]);
     }
 }

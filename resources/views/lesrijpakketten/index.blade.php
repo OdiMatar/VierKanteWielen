@@ -23,8 +23,8 @@
         </form>
     </div>
 
-    <div class="table-responsive bg-white border rounded-3">
-        <table class="table table-striped table-hover align-middle mb-0">
+    <div class="data-table-wrap">
+        <table class="table data-table align-middle mb-0">
             <thead>
                 <tr>
                     <th>Naam</th>
@@ -38,12 +38,12 @@
             <tbody>
                 @forelse ($lesrijpakketten as $pakket)
                     <tr>
-                        <td class="fw-bold">{{ $pakket->Naam }}</td>
-                        <td>{{ $pakket->Lessen }} lessen</td>
-                        <td class="text-success fw-bold">EUR {{ number_format($pakket->Prijs, 2, ',', '.') }}</td>
+                        <td class="fw-bold text-dark">{{ $pakket->Naam }}</td>
+                        <td><span class="data-pill">{{ $pakket->Lessen }} lessen</span></td>
+                        <td class="data-amount">EUR {{ number_format($pakket->Prijs, 2, ',', '.') }}</td>
                         <td>
                             @if ($pakket->Categorie)
-                                <span class="badge bg-info">{{ $pakket->Categorie }}</span>
+                                <span class="data-badge">{{ $pakket->Categorie }}</span>
                             @else
                                 <span class="text-muted">-</span>
                             @endif

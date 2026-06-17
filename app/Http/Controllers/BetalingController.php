@@ -19,13 +19,17 @@ class BetalingController extends Controller
     public function index(Request $request): View
     {
         $zoekterm = trim((string) $request->query('zoekterm', ''));
+        $geselecteerdeStatus = trim((string) $request->query('status', ''));
+        $geselecteerdeBetaalmethode = trim((string) $request->query('betaalmethode', ''));
         $betalingen = collect();
 
         try {
-            $betalingen = $this->getBetalingen($zoekterm);
+            $betalingen = $this->getBetalingen($zoekterm, $geselecteerdeStatus, $geselecteerdeBetaalmethode);
 
             $this->logger()->info('Betalingsoverzicht succesvol opgehaald.', [
                 'zoekterm' => $zoekterm ?: 'geen',
+                'status' => $geselecteerdeStatus ?: 'alle',
+                'betaalmethode' => $geselecteerdeBetaalmethode ?: 'alle',
                 'aantal' => $betalingen->count(),
             ]);
         } catch (Throwable $exception) {
@@ -38,10 +42,21 @@ class BetalingController extends Controller
 
         return view('betalingen.index', [
             'betalingen' => $betalingen,
+            'betaalmethodes' => $this->betaalmethodes(),
+            'statussen' => $this->statussen(),
+            'totalen' => $this->berekenTotalen($betalingen),
+            'zoekterm' => $zoekterm,
+            'geselecteerdeStatus' => $geselecteerdeStatus,
+            'geselecteerdeBetaalmethode' => $geselecteerdeBetaalmethode,
+        ]);
+    }
+
+    public function create(): View
+    {
+        return view('betalingen.create', [
             'klanten' => $this->getKlanten(),
             'betaalmethodes' => $this->betaalmethodes(),
             'statussen' => $this->statussen(),
-            'zoekterm' => $zoekterm,
         ]);
     }
 
@@ -100,12 +115,26 @@ class BetalingController extends Controller
         }
     }
 
-    private function getBetalingen(string $zoekterm): Collection
+    private function getBetalingen(string $zoekterm, string $status, string $betaalmethode): Collection
+    {
+        if (DB::getDriverName() === 'mysql') {
+            return collect(DB::select('CALL sp_get_betalingen_overzicht(?, ?, ?)', [
+                $zoekterm,
+                $status,
+                $betaalmethode,
+            ]));
+        }
+
+        return $this->getBetalingenViaQueryBuilder($zoekterm, $status, $betaalmethode);
+    }
+
+    private function getBetalingenViaQueryBuilder(string $zoekterm, string $status, string $betaalmethode): Collection
     {
         $query = DB::table('betalingen as b')
             ->select([
                 'b.Id',
                 'u.name as KlantNaam',
+                'u.email as KlantEmail',
                 'b.Bedrag',
                 'b.Betaalmethode',
                 'b.Status',
@@ -118,16 +147,38 @@ class BetalingController extends Controller
         if ($zoekterm !== '') {
             $query->where(function ($query) use ($zoekterm): void {
                 $query->where('u.name', 'like', "%{$zoekterm}%")
+                    ->orWhere('u.email', 'like', "%{$zoekterm}%")
                     ->orWhere('b.Betaalmethode', 'like', "%{$zoekterm}%")
                     ->orWhere('b.Status', 'like', "%{$zoekterm}%")
                     ->orWhere('b.Opmerking', 'like', "%{$zoekterm}%");
             });
         }
 
+        if ($status !== '') {
+            $query->where('b.Status', $status);
+        }
+
+        if ($betaalmethode !== '') {
+            $query->where('b.Betaalmethode', $betaalmethode);
+        }
+
         return $query
             ->orderByDesc('b.DatumAangemaakt')
             ->orderByDesc('b.Id')
             ->get();
+    }
+
+    /**
+     * @return array{totaal: float, betaald: float, open: float, openAantal: int}
+     */
+    private function berekenTotalen(Collection $betalingen): array
+    {
+        return [
+            'totaal' => (float) $betalingen->sum('Bedrag'),
+            'betaald' => (float) $betalingen->where('Status', 'Betaald')->sum('Bedrag'),
+            'open' => (float) $betalingen->where('Status', 'Open')->sum('Bedrag'),
+            'openAantal' => $betalingen->where('Status', 'Open')->count(),
+        ];
     }
 
     private function betalingRedenBestaat(int|string $klantId, string $reden): bool
@@ -144,7 +195,7 @@ class BetalingController extends Controller
         return User::query()
             ->where('role', 'leerling')
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'email', 'created_at']);
     }
 
     /**

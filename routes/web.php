@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/instructeurs/{instructeur}/voertuigen', [VoertuigController::class, 'index'])->name('instructeurs.voertuigen.index');
     Route::middleware('can.manage.payments')->group(function (): void {
         Route::get('/betalingen', [BetalingController::class, 'index'])->name('betalingen.index');
+        Route::get('/betalingen/nieuw', [BetalingController::class, 'create'])->name('betalingen.create');
         Route::post('/betalingen', [BetalingController::class, 'store'])->name('betalingen.store');
     });
 

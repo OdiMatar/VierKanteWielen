@@ -11,8 +11,8 @@
         <div class="alert alert-info mb-3">Er zijn geen accounts behalve de adminaccount.</div>
     @endif
 
-    <div class="table-responsive bg-white border rounded-3">
-        <table class="table table-striped table-hover align-middle mb-0">
+    <div class="data-table-wrap">
+        <table class="table data-table align-middle mb-0">
             <thead>
                 <tr>
                     <th>Naam</th>
@@ -24,9 +24,9 @@
             <tbody>
                 @foreach ($accounts as $account)
                     <tr>
-                        <td>{{ $account->name }}</td>
+                        <td class="fw-bold text-dark">{{ $account->name }}</td>
                         <td>{{ $account->email }}</td>
-                        <td><span class="badge text-bg-light border">{{ ucfirst($account->role) }}</span></td>
+                        <td><span class="data-pill">{{ ucfirst($account->role) }}</span></td>
                         <td>{{ \Illuminate\Support\Carbon::parse($account->created_at)->format('d-m-Y H:i') }}</td>
                     </tr>
                 @endforeach

@@ -82,9 +82,28 @@ CREATE TABLE voertuig_instructeur (
     CONSTRAINT fk_voertuig_instructeur_instructeurs FOREIGN KEY (InstructeurId) REFERENCES instructeurs(Id) ON DELETE CASCADE
 );
 
+CREATE TABLE betalingen (
+    Id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    KlantId BIGINT UNSIGNED NOT NULL,
+    Bedrag DECIMAL(8, 2) NOT NULL,
+    Betaalmethode VARCHAR(40) NOT NULL,
+    Status VARCHAR(30) NOT NULL,
+    IsActief TINYINT(1) NOT NULL DEFAULT 1,
+    Opmerking VARCHAR(255) NULL,
+    DatumAangemaakt TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    DatumGewijzigd TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_betalingen_users FOREIGN KEY (KlantId) REFERENCES users(id) ON DELETE CASCADE
+);
+
 INSERT INTO users (name, email, role, password) VALUES
-('Administrator Autorijschool', 'admin@autorijschool.test', 'administrator', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
-('Instructeur Demo', 'instructeur@autorijschool.test', 'instructeur', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq');
+('Owner Autorijschool', 'owner@autorijschool.test', 'owner', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
+('Admin Autorijschool', 'admin@autorijschool.test', 'admin', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
+('Instructeur Demo', 'instructeur@autorijschool.test', 'instructeur', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
+('Sanne Jansen', 'sanne.jansen@autorijschool.test', 'leerling', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
+('Yassin El Amrani', 'yassin.elamrani@autorijschool.test', 'leerling', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
+('Noor de Vries', 'noor.devries@autorijschool.test', 'leerling', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
+('Milan Bakker', 'milan.bakker@autorijschool.test', 'leerling', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq'),
+('Emma Vermeer', 'emma.vermeer@autorijschool.test', 'leerling', '$2y$10$NnVI/fhYpY65RhnNL5O18ustnbl7h.vHcd2GK8OOC64bNxSd7EJSq');
 
 INSERT INTO type_voertuigen (Id, TypeVoertuig, Rijbewijscategorie) VALUES
 (1, 'Personenauto', 'B'),
@@ -121,6 +140,13 @@ INSERT INTO voertuig_instructeur (Id, VoertuigId, InstructeurId, DatumToekenning
 (5, 5, 1, '2019-08-30'),
 (6, 10, 5, '2020-02-02'),
 (7, 2, 5, '2020-03-12');
+
+INSERT INTO betalingen (KlantId, Bedrag, Betaalmethode, Status, Opmerking) VALUES
+((SELECT id FROM users WHERE email = 'sanne.jansen@autorijschool.test'), 549.99, 'iDEAL', 'Betaald', 'Aanbetaling basispakket'),
+((SELECT id FROM users WHERE email = 'yassin.elamrani@autorijschool.test'), 999.99, 'Bankoverschrijving', 'Open', 'Termijnbetaling standaard pakket'),
+((SELECT id FROM users WHERE email = 'noor.devries@autorijschool.test'), 59.99, 'Pin', 'Betaald', 'Losse extra rijles'),
+((SELECT id FROM users WHERE email = 'milan.bakker@autorijschool.test'), 1699.99, 'iDEAL', 'Betaald', 'Premium pakket volledig betaald'),
+((SELECT id FROM users WHERE email = 'emma.vermeer@autorijschool.test'), 110.00, 'Contant', 'Open', 'Examentraining en praktijkexamen');
 
 DELIMITER $$
 
@@ -165,6 +191,38 @@ BEGIN
     FROM instructeurs
     WHERE IsActief = 1
     ORDER BY CHAR_LENGTH(AantalSterren) DESC, Achternaam ASC, Voornaam ASC;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_get_betalingen_overzicht $$
+CREATE PROCEDURE sp_get_betalingen_overzicht(
+    IN p_Zoekterm VARCHAR(255),
+    IN p_Status VARCHAR(30),
+    IN p_Betaalmethode VARCHAR(40)
+)
+BEGIN
+    SELECT
+        b.Id,
+        u.name AS KlantNaam,
+        u.email AS KlantEmail,
+        b.Bedrag,
+        b.Betaalmethode,
+        b.Status,
+        b.Opmerking,
+        b.DatumAangemaakt
+    FROM betalingen b
+    INNER JOIN users u ON u.id = b.KlantId
+    WHERE b.IsActief = 1
+      AND (
+          p_Zoekterm = ''
+          OR u.name LIKE CONCAT('%', p_Zoekterm, '%')
+          OR u.email LIKE CONCAT('%', p_Zoekterm, '%')
+          OR b.Betaalmethode LIKE CONCAT('%', p_Zoekterm, '%')
+          OR b.Status LIKE CONCAT('%', p_Zoekterm, '%')
+          OR b.Opmerking LIKE CONCAT('%', p_Zoekterm, '%')
+      )
+      AND (p_Status = '' OR b.Status = p_Status)
+      AND (p_Betaalmethode = '' OR b.Betaalmethode = p_Betaalmethode)
+    ORDER BY b.DatumAangemaakt DESC, b.Id DESC;
 END $$
 
 DROP PROCEDURE IF EXISTS sp_get_voertuigen_bij_instructeur $$

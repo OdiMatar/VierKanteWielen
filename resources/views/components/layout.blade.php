@@ -56,8 +56,8 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        @if ($errors->has('Betaling'))
-            <div class="alert alert-danger">{{ $errors->first('Betaling') }}</div>
+        @if ($errors->has('Betaling') || $errors->has('Voertuig'))
+            <div class="alert alert-danger">{{ $errors->first('Betaling') ?: $errors->first('Voertuig') }}</div>
         @endif
 
         {{ $slot }}

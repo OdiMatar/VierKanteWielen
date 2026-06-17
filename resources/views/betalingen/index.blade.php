@@ -1,8 +1,16 @@
 <x-layout title="Betalingen">
-    <section class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-3">
+    <section class="payments-header mb-3">
         <div>
+            <p class="payments-kicker">Financieel overzicht</p>
             <h1 class="h3 mb-1">Betalingen</h1>
-            <p class="text-muted mb-0">Aantal geregistreerde betalingen: [{{ count($betalingen) }}]</p>
+            <p class="mb-0">Bekijk en registreer betalingen van leerlingen.</p>
+        </div>
+        <div class="payments-header-actions">
+            <a class="btn btn-primary payments-new-button" href="{{ route('betalingen.create') }}">Nieuwe betaling</a>
+            <div class="payments-total">
+                <span>Betalingen</span>
+                <strong>{{ count($betalingen) }}</strong>
+            </div>
         </div>
     </section>
 
@@ -10,79 +18,54 @@
         <div class="alert alert-danger">Controleer de invoer en probeer het opnieuw.</div>
     @endif
 
-    <div class="bg-white border rounded-3 p-3 mb-3">
-        <form method="post" action="{{ route('betalingen.store') }}" class="row g-3">
-            @csrf
-            <div class="col-md-6 col-xl-3">
-                <label for="KlantId" class="form-label">Leerling</label>
-                <select id="KlantId" name="KlantId" class="form-select @error('KlantId') is-invalid @enderror" required>
-                    <option value="">Kies een leerling</option>
-                    @foreach ($klanten as $klant)
-                        <option value="{{ $klant->id }}" @selected((int) old('KlantId') === $klant->id)>{{ $klant->name }}</option>
-                    @endforeach
-                </select>
-                @error('KlantId')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+    <section class="payment-summary-grid mb-3">
+        <article>
+            <span>Totaal zichtbaar</span>
+            <strong>EUR {{ number_format($totalen['totaal'], 2, ',', '.') }}</strong>
+        </article>
+        <article>
+            <span>Betaald</span>
+            <strong>EUR {{ number_format($totalen['betaald'], 2, ',', '.') }}</strong>
+        </article>
+        <article>
+            <span>Openstaand</span>
+            <strong>EUR {{ number_format($totalen['open'], 2, ',', '.') }}</strong>
+            <small>{{ $totalen['openAantal'] }} open betaling(en)</small>
+        </article>
+    </section>
 
-            <div class="col-md-6 col-xl-2">
-                <label for="Bedrag" class="form-label">Bedrag</label>
-                <input id="Bedrag" name="Bedrag" type="number" min="0.01" max="99999.99" step="0.01" value="{{ old('Bedrag') }}" class="form-control @error('Bedrag') is-invalid @enderror" required>
-                @error('Bedrag')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="col-md-6 col-xl-2">
-                <label for="Betaalmethode" class="form-label">Betaalmethode</label>
-                <select id="Betaalmethode" name="Betaalmethode" class="form-select @error('Betaalmethode') is-invalid @enderror" required>
-                    <option value="">Kies methode</option>
-                    @foreach ($betaalmethodes as $betaalmethode)
-                        <option value="{{ $betaalmethode }}" @selected(old('Betaalmethode') === $betaalmethode)>{{ $betaalmethode }}</option>
-                    @endforeach
-                </select>
-                @error('Betaalmethode')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="col-md-6 col-xl-2">
-                <label for="Status" class="form-label">Status</label>
-                <select id="Status" name="Status" class="form-select @error('Status') is-invalid @enderror" required>
-                    <option value="">Kies status</option>
-                    @foreach ($statussen as $status)
-                        <option value="{{ $status }}" @selected(old('Status', 'Open') === $status)>{{ $status }}</option>
-                    @endforeach
-                </select>
-                @error('Status')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="col-md-8 col-xl-2">
-                <label for="Opmerking" class="form-label">Reden</label>
-                <input id="Opmerking" name="Opmerking" type="text" maxlength="255" value="{{ old('Opmerking') }}" class="form-control @error('Opmerking') is-invalid @enderror" required>
-                @error('Opmerking')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="col-md-4 col-xl-1 d-grid align-self-end">
-                <button type="submit" class="btn btn-primary">Toevoegen</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="bg-white border rounded-3 p-3 mb-3">
+    <div class="payments-toolbar mb-3">
         <form method="get" action="{{ route('betalingen.index') }}" class="row g-2 align-items-end">
-            <div class="col-md-9">
+            <div class="col-md-4">
                 <label for="zoekterm" class="form-label mb-1">Zoekterm</label>
                 <input id="zoekterm" name="zoekterm" type="search" value="{{ $zoekterm }}" class="form-control" maxlength="255">
             </div>
-            <div class="col-md-3 d-grid">
+            <div class="col-md-3">
+                <label for="status" class="form-label mb-1">Status</label>
+                <select id="status" name="status" class="form-select">
+                    <option value="">Alle statussen</option>
+                    @foreach ($statussen as $status)
+                        <option value="{{ $status }}" @selected($geselecteerdeStatus === $status)>{{ $status }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="betaalmethode" class="form-label mb-1">Betaalmethode</label>
+                <select id="betaalmethode" name="betaalmethode" class="form-select">
+                    <option value="">Alle methodes</option>
+                    @foreach ($betaalmethodes as $betaalmethode)
+                        <option value="{{ $betaalmethode }}" @selected($geselecteerdeBetaalmethode === $betaalmethode)>{{ $betaalmethode }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
                 <button type="submit" class="btn btn-primary">Zoeken</button>
             </div>
+            @if ($zoekterm !== '' || $geselecteerdeStatus !== '' || $geselecteerdeBetaalmethode !== '')
+                <div class="col-12">
+                    <a class="payments-reset-link" href="{{ route('betalingen.index') }}">Filters wissen</a>
+                </div>
+            @endif
         </form>
     </div>
 
@@ -96,12 +79,12 @@
         </div>
     @endif
 
-    <div class="table-responsive bg-white border rounded-3">
-        <table class="table table-striped table-hover align-middle mb-0">
+    <div class="data-table-wrap payments-table-wrap">
+        <table class="table data-table payments-table align-middle mb-0">
             <thead>
                 <tr>
-                    <th>Betalingsnummer</th>
-                    <th>Klantnaam</th>
+                    <th>Nr.</th>
+                    <th>Leerling</th>
                     <th>Bedrag</th>
                     <th>Betaalmethode</th>
                     <th>Status</th>
@@ -110,13 +93,34 @@
             </thead>
             <tbody>
                 @forelse ($betalingen as $betaling)
+                    @php
+                        $statusClass = match ($betaling->Status) {
+                            'Betaald' => 'is-paid',
+                            'Open' => 'is-open',
+                            'Mislukt' => 'is-failed',
+                            default => 'is-neutral',
+                        };
+                    @endphp
                     <tr>
-                        <td class="fw-bold">{{ $betaling->Id }}</td>
-                        <td>{{ $betaling->KlantNaam }}</td>
-                        <td class="text-success fw-bold">EUR {{ number_format((float) $betaling->Bedrag, 2, ',', '.') }}</td>
-                        <td>{{ $betaling->Betaalmethode }}</td>
-                        <td>{{ $betaling->Status }}</td>
-                        <td>{{ $betaling->Opmerking }}</td>
+                        <td data-label="Nr.">
+                            <div class="payments-number">
+                                <span>#{{ $betaling->Id }}</span>
+                                <small>{{ \Illuminate\Support\Carbon::parse($betaling->DatumAangemaakt)->format('d-m-Y H:i') }}</small>
+                            </div>
+                        </td>
+                        <td data-label="Leerling">
+                            <div class="payments-customer">
+                                <span>{{ substr($betaling->KlantNaam, 0, 1) }}</span>
+                                <div>
+                                    <strong>{{ $betaling->KlantNaam }}</strong>
+                                    <small>{{ $betaling->KlantEmail }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="payments-amount" data-label="Bedrag">EUR {{ number_format((float) $betaling->Bedrag, 2, ',', '.') }}</td>
+                        <td data-label="Methode"><span class="payments-method">{{ $betaling->Betaalmethode }}</span></td>
+                        <td data-label="Status"><span class="payments-status {{ $statusClass }}">{{ $betaling->Status }}</span></td>
+                        <td class="payments-reason" data-label="Reden">{{ $betaling->Opmerking }}</td>
                     </tr>
                 @empty
                     <tr>
