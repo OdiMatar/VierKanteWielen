@@ -8,7 +8,7 @@
         <div class="payments-header-actions">
             <a class="btn btn-primary payments-new-button" href="{{ route('betalingen.create') }}">Nieuwe betaling</a>
             <div class="payments-total">
-                <span>Aantal betalingen</span>
+                <span>Betalingen</span>
                 <strong>{{ count($betalingen) }}</strong>
             </div>
         </div>
@@ -40,8 +40,8 @@
         </div>
     @endif
 
-    <div class="payments-table-wrap">
-        <table class="table payments-table align-middle mb-0">
+    <div class="data-table-wrap payments-table-wrap">
+        <table class="table data-table payments-table align-middle mb-0">
             <thead>
                 <tr>
                     <th>Nr.</th>

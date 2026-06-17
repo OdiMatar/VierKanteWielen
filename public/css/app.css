@@ -359,8 +359,8 @@ h3,
 }
 
 .payments-total {
-    min-width: 150px;
-    padding: 0.9rem 1rem;
+    min-width: 118px;
+    padding: 0.65rem 0.85rem;
     border-radius: 0.75rem;
     background: #11203d;
     color: #ffffff;
@@ -371,34 +371,37 @@ h3,
 
 .payments-total span {
     color: #c8e6ff;
-    font-size: 0.76rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
 }
 
 .payments-total strong {
-    font-size: 2rem;
+    font-size: 1.55rem;
     line-height: 1;
 }
 
 .payments-header-actions {
     display: flex;
-    align-items: stretch;
-    gap: 0.75rem;
+    align-items: center;
+    gap: 0.65rem;
 }
 
 .payments-new-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 150px;
+    min-width: 142px;
+    min-height: 48px;
     border-radius: 0.75rem;
     font-weight: 800;
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.18);
 }
 
 .payments-panel,
 .payments-toolbar,
-.payments-table-wrap {
+.payments-table-wrap,
+.data-table-wrap {
     border: 1px solid rgba(219, 230, 240, 0.95);
     border-radius: 0.9rem;
     background: rgba(255, 255, 255, 0.96);
@@ -449,13 +452,14 @@ h3,
     overflow-x: auto;
 }
 
-.payments-table {
+.data-table {
     --bs-table-bg: transparent;
     --bs-table-hover-bg: #f7fbff;
+    min-width: 760px;
 }
 
-.payments-table thead th {
-    padding: 0.85rem 1rem;
+.data-table thead th {
+    padding: 0.9rem 1rem;
     background: #f4f8fb;
     color: #45556f;
     border-bottom: 1px solid #dbe6f0;
@@ -464,11 +468,45 @@ h3,
     text-transform: uppercase;
 }
 
-.payments-table tbody td {
-    padding: 0.95rem 1rem;
+.data-table tbody td {
+    padding: 1rem;
     border-color: #e7eef5;
     color: #243852;
     vertical-align: middle;
+}
+
+.data-table tbody tr {
+    transition: background-color 160ms ease;
+}
+
+.data-table tbody tr:hover {
+    background: #f7fbff;
+}
+
+.data-amount {
+    color: #0b6b4f;
+    font-weight: 800;
+}
+
+.data-pill,
+.data-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.32rem 0.62rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.data-pill {
+    background: #f4f8fb;
+    color: #45556f;
+}
+
+.data-badge {
+    background: #e8f7f3;
+    color: #08735e;
 }
 
 .payments-id {
@@ -612,12 +650,21 @@ h3,
     }
 
     .payments-total {
-        place-content: start;
-        text-align: left;
+        place-content: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .payments-new-button {
+        width: 100%;
     }
 
     .payments-table thead {
         display: none;
+    }
+
+    .payments-table {
+        min-width: 0;
     }
 
     .payments-table tbody tr {
