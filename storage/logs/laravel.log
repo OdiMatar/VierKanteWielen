@@ -1980,3 +1980,11 @@ END) at C:/project/VierKanteWielen/vendor/laravel/framework/src/Illuminate/Datab
 #22 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:Illuminate/Foundation/Bootstrap/HandleExceptions::forwardsTo():257}()
 #23 {main}
 "} 
+[2026-06-17 09:49:36] local.ERROR: Cannot redeclare App\Models\User::isAdministrator() {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot redeclare App\\Models\\User::isAdministrator() at C:/Users/odaib/Herd/Autorijschool/app/Models/User.php:48)
+[stacktrace]
+#0 {main}
+"} 
+[2026-06-17 09:49:49] local.ERROR: Cannot redeclare App\Models\User::isAdministrator() {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot redeclare App\\Models\\User::isAdministrator() at C:/Users/odaib/Herd/Autorijschool/app/Models/User.php:48)
+[stacktrace]
+#0 {main}
+"} 
