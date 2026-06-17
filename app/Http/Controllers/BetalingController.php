@@ -152,7 +152,7 @@ class BetalingController extends Controller
         return User::query()
             ->where('role', 'leerling')
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'email', 'created_at']);
     }
 
     /**

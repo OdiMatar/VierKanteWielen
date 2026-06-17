@@ -25,7 +25,14 @@
                 <select id="KlantId" name="KlantId" class="form-select @error('KlantId') is-invalid @enderror" required autofocus>
                     <option value="">Kies een leerling</option>
                     @foreach ($klanten as $klant)
-                        <option value="{{ $klant->id }}" @selected((int) old('KlantId') === $klant->id)>{{ $klant->name }}</option>
+                        <option
+                            value="{{ $klant->id }}"
+                            data-email="{{ $klant->email }}"
+                            data-registratie="{{ $klant->created_at?->format('d-m-Y') }}"
+                            @selected((int) old('KlantId') === $klant->id)
+                        >
+                            {{ $klant->name }}
+                        </option>
                     @endforeach
                 </select>
                 @error('KlantId')
@@ -68,6 +75,27 @@
             </div>
 
             <div class="col-12">
+                <div class="payment-detail-grid">
+                    <div>
+                        <span>E-mailadres</span>
+                        <strong id="selectedStudentEmail">Kies eerst een leerling</strong>
+                    </div>
+                    <div>
+                        <span>Registratiedatum leerling</span>
+                        <strong id="selectedStudentDate">-</strong>
+                    </div>
+                    <div>
+                        <span>Betaaldatum</span>
+                        <strong>{{ now()->format('d-m-Y H:i') }}</strong>
+                    </div>
+                    <div>
+                        <span>Betalingsnummer</span>
+                        <strong>Wordt automatisch aangemaakt</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
                 <label for="Opmerking" class="form-label">Reden</label>
                 <input id="Opmerking" name="Opmerking" type="text" maxlength="255" value="{{ old('Opmerking') }}" class="form-control @error('Opmerking') is-invalid @enderror" required>
                 @error('Opmerking')
@@ -81,4 +109,22 @@
             </div>
         </form>
     </div>
+
+    <script>
+        (() => {
+            const studentSelect = document.getElementById('KlantId');
+            const emailTarget = document.getElementById('selectedStudentEmail');
+            const dateTarget = document.getElementById('selectedStudentDate');
+
+            const updateStudentDetails = () => {
+                const selectedOption = studentSelect.options[studentSelect.selectedIndex];
+
+                emailTarget.textContent = selectedOption?.dataset.email || 'Kies eerst een leerling';
+                dateTarget.textContent = selectedOption?.dataset.registratie || '-';
+            };
+
+            studentSelect.addEventListener('change', updateStudentDetails);
+            updateStudentDetails();
+        })();
+    </script>
 </x-layout>

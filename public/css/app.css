@@ -429,6 +429,37 @@ h3,
     width: 100%;
 }
 
+.payment-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.2rem;
+}
+
+.payment-detail-grid div {
+    min-height: 76px;
+    padding: 0.8rem;
+    border: 1px solid #dbe6f0;
+    border-radius: 0.75rem;
+    background: #f7fbff;
+}
+
+.payment-detail-grid span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: #60738f;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.payment-detail-grid strong {
+    color: #11203d;
+    font-size: 0.95rem;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
 .payments-panel .form-label,
 .payments-toolbar .form-label {
     color: #45556f;
@@ -664,6 +695,10 @@ h3,
 
     .payments-new-button {
         width: 100%;
+    }
+
+    .payment-detail-grid {
+        grid-template-columns: 1fr;
     }
 
     .payments-table thead {
