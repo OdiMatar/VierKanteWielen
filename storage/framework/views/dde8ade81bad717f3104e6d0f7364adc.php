@@ -56,8 +56,8 @@
             <div class="alert alert-success"><?php echo e(session('success')); ?></div>
         <?php endif; ?>
 
-        <?php if($errors->has('Betaling')): ?>
-            <div class="alert alert-danger"><?php echo e($errors->first('Betaling')); ?></div>
+        <?php if($errors->has('Betaling') || $errors->has('Voertuig')): ?>
+            <div class="alert alert-danger"><?php echo e($errors->first('Betaling') ?: $errors->first('Voertuig')); ?></div>
         <?php endif; ?>
 
         <?php echo e($slot); ?>

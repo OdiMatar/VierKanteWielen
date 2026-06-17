@@ -7,10 +7,12 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // De procedures zijn alleen nodig voor MySQL.
         if (DB::getDriverName() !== 'mysql') {
             return;
         }
 
+        // Maak de procedure voor het accountoverzicht opnieuw aan.
         DB::unprepared(<<<'SQL'
 DROP PROCEDURE IF EXISTS sp_get_accounts_overzicht;
 CREATE PROCEDURE sp_get_accounts_overzicht()
@@ -21,6 +23,7 @@ BEGIN
 END
 SQL);
 
+        // Maak de procedure voor het toevoegen van accounts opnieuw aan.
         DB::unprepared(<<<'SQL'
 DROP PROCEDURE IF EXISTS sp_create_account;
 CREATE PROCEDURE sp_create_account(
@@ -44,10 +47,12 @@ SQL);
 
     public function down(): void
     {
+        // Sla opruimen over als de database geen MySQL is.
         if (DB::getDriverName() !== 'mysql') {
             return;
         }
 
+        // Verwijder de accountprocedures bij rollback.
         DB::unprepared('DROP PROCEDURE IF EXISTS sp_create_account');
         DB::unprepared('DROP PROCEDURE IF EXISTS sp_get_accounts_overzicht');
     }

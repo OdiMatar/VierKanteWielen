@@ -12,6 +12,7 @@ class AccountController extends Controller
 {
     public function index(): View
     {
+        // Haal alle accounts op voor het overzicht.
         return view('accounts.index', [
             'accounts' => Account::allViaStoredProcedure(),
         ]);
@@ -19,6 +20,7 @@ class AccountController extends Controller
 
     public function create(): View
     {
+        // Geef de beschikbare rollen mee aan het formulier.
         return view('accounts.create', [
             'roles' => $this->roles(),
         ]);
@@ -26,6 +28,7 @@ class AccountController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Controleer eerst alle ingevulde accountgegevens.
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
@@ -35,6 +38,7 @@ class AccountController extends Controller
 
         $result = Account::createViaStoredProcedure($data);
 
+        // Stuur de gebruiker terug als het account niet kan worden gemaakt.
         if (! $result['success']) {
             return back()
                 ->withErrors(['email' => $result['message']])
@@ -46,11 +50,9 @@ class AccountController extends Controller
             ->with('success', $result['message']);
     }
 
-    /**
-     * @return array<string, string>
-     */
     private function roles(): array
     {
+        // Deze rollen mogen gekozen worden bij een nieuw account.
         return [
             'administrator' => 'Administrator',
             'instructeur' => 'Instructeur',

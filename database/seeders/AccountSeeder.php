@@ -12,8 +12,10 @@ class AccountSeeder extends Seeder
      */
     public function run(): void
     {
+        // Begin met een lege accountlijst.
         User::query()->delete();
 
+        // Voeg het standaard adminaccount toe.
         User::create([
             'name' => 'Administrator Autorijschool',
             'email' => 'admin@autorijschool.test',
@@ -21,6 +23,7 @@ class AccountSeeder extends Seeder
             'role' => 'administrator',
         ]);
 
+        // Voeg een voorbeeldinstructeur toe.
         User::create([
             'name' => 'Instructeur Demo',
             'email' => 'instructeur@autorijschool.test',
@@ -28,6 +31,7 @@ class AccountSeeder extends Seeder
             'role' => 'instructeur',
         ]);
 
+        // Voeg een voorbeeldleerling toe.
         User::create([
             'name' => 'Leerling Demo',
             'email' => 'leerling@autorijschool.test',

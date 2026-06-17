@@ -44,9 +44,4 @@ class User extends Authenticatable
     {
         return in_array($this->role, ['administrator', 'admin'], true);
     }
-
-    public function isAdministrator(): bool
-    {
-        return in_array($this->role, ['administrator', 'admin'], true);
-    }
 }

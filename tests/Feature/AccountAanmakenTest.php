@@ -12,18 +12,22 @@ class AccountAanmakenTest extends TestCase
 
     public function test_nieuw_account_bestaat_niet_en_wordt_toegevoegd(): void
     {
+        // Maak een administrator aan voor toegang tot accountbeheer.
         $administrator = User::factory()->create(['role' => 'administrator']);
 
+        // Controleer of de homepagina de accountlink toont.
         $this->actingAs($administrator)
             ->get(route('home'))
             ->assertOk()
             ->assertSee('Accounts');
 
+        // Controleer of de accountpagina bereikbaar is.
         $this->actingAs($administrator)
             ->get(route('accounts.index'))
             ->assertOk()
             ->assertSee('Account aanmaken');
 
+        // Verstuur het formulier voor een nieuw account.
         $this->actingAs($administrator)
             ->post(route('accounts.store'), [
                 'name' => 'Nieuwe Leerling',
@@ -44,14 +48,17 @@ class AccountAanmakenTest extends TestCase
 
     public function test_nieuw_account_bestaat_wel_en_email_melding_wordt_getoond(): void
     {
+        // Maak een administrator aan voor deze test.
         $administrator = User::factory()->create(['role' => 'administrator']);
 
+        // Zet alvast een account met hetzelfde e-mailadres klaar.
         User::factory()->create([
             'name' => 'Bestaande Leerling',
             'email' => 'bestaand@autorijschool.test',
             'role' => 'leerling',
         ]);
 
+        // Open eerst de normale accountpagina's.
         $this->actingAs($administrator)
             ->get(route('home'))
             ->assertOk()

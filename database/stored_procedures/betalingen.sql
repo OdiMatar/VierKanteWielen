@@ -1,4 +1,5 @@
-DROP PROCEDURE IF EXISTS sp_get_betalingen_overzicht;
+USE autorijschool;DELIMITER $$
+drop procedure if exists sp_get_betalingen_overzicht;
 CREATE PROCEDURE sp_get_betalingen_overzicht(
     IN p_Zoekterm VARCHAR(255),
     IN p_Status VARCHAR(30),
@@ -28,4 +29,6 @@ BEGIN
       AND (p_Status = '' OR b.Status = p_Status)
       AND (p_Betaalmethode = '' OR b.Betaalmethode = p_Betaalmethode)
     ORDER BY b.DatumAangemaakt DESC, b.Id DESC;
-END;
+END$$
+
+DELIMITER ;

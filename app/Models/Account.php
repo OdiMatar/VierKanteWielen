@@ -21,6 +21,7 @@ class Account extends Model
     public static function allViaStoredProcedure(): Collection
     {
         try {
+            // Gebruik MySQL procedures als die beschikbaar zijn.
             $accounts = DB::getDriverName() === 'mysql'
                 ? collect(DB::select('CALL sp_get_accounts_overzicht()'))
                 : self::query()
@@ -46,13 +47,10 @@ class Account extends Model
         }
     }
 
-    /**
-     * @param array{name: string, email: string, role: string, password: string} $data
-     * @return array{success: bool, message: string, account_id?: int|null}
-     */
     public static function createViaStoredProcedure(array $data): array
     {
         try {
+            // Hash het wachtwoord voordat het account wordt opgeslagen.
             $data['password'] = Hash::make($data['password']);
 
             if (DB::getDriverName() === 'mysql') {
@@ -100,6 +98,7 @@ class Account extends Model
 
     private static function accountLogger(): LoggerInterface
     {
+        // Schrijf accountmeldingen naar een apart logbestand.
         return Log::build([
             'driver' => 'single',
             'path' => database_path(self::ACCOUNT_LOG_FILE),
