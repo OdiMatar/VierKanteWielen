@@ -20,7 +20,7 @@
         </div>
         <form method="post" action="{{ route('betalingen.store') }}" class="row g-3">
             @csrf
-            <div class="col-md-6">
+            <div class="col-md-6 col-xl-3">
                 <label for="KlantId" class="form-label">Leerling</label>
                 <select id="KlantId" name="KlantId" class="form-select @error('KlantId') is-invalid @enderror" required autofocus>
                     <option value="">Kies een leerling</option>
@@ -33,7 +33,7 @@
                 @enderror
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 col-xl-3">
                 <label for="Bedrag" class="form-label">Bedrag</label>
                 <input id="Bedrag" name="Bedrag" type="number" min="0.01" max="99999.99" step="0.01" value="{{ old('Bedrag') }}" class="form-control @error('Bedrag') is-invalid @enderror" required>
                 @error('Bedrag')
@@ -41,7 +41,7 @@
                 @enderror
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 col-xl-3">
                 <label for="Betaalmethode" class="form-label">Betaalmethode</label>
                 <select id="Betaalmethode" name="Betaalmethode" class="form-select @error('Betaalmethode') is-invalid @enderror" required>
                     <option value="">Kies methode</option>
@@ -54,7 +54,7 @@
                 @enderror
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 col-xl-3">
                 <label for="Status" class="form-label">Status</label>
                 <select id="Status" name="Status" class="form-select @error('Status') is-invalid @enderror" required>
                     <option value="">Kies status</option>

@@ -426,7 +426,7 @@ h3,
 }
 
 .payments-create-panel {
-    max-width: 920px;
+    width: 100%;
 }
 
 .payments-panel .form-label,
