@@ -413,6 +413,41 @@ h3,
     padding: 1rem;
 }
 
+.payment-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.payment-summary-grid article {
+    padding: 1rem;
+    border: 1px solid rgba(219, 230, 240, 0.95);
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 24px rgba(12, 35, 66, 0.06);
+}
+
+.payment-summary-grid span {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #60738f;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.payment-summary-grid strong {
+    display: block;
+    color: #11203d;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.payment-summary-grid small {
+    color: #7188a6;
+    font-weight: 700;
+}
+
 .payments-panel-heading {
     display: flex;
     justify-content: space-between;
@@ -472,6 +507,22 @@ h3,
 .payments-toolbar .form-control {
     border-color: #cfdeea;
     border-radius: 0.7rem;
+}
+
+.payments-toolbar .form-select {
+    border-color: #cfdeea;
+    border-radius: 0.7rem;
+}
+
+.payments-reset-link {
+    color: #0a7c9f;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.payments-reset-link:hover {
+    text-decoration: underline;
 }
 
 .payments-submit {
@@ -714,6 +765,10 @@ h3,
     }
 
     .payment-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-summary-grid {
         grid-template-columns: 1fr;
     }
 

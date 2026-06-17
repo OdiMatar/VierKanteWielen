@@ -18,15 +18,54 @@
         <div class="alert alert-danger">Controleer de invoer en probeer het opnieuw.</div>
     @endif
 
+    <section class="payment-summary-grid mb-3">
+        <article>
+            <span>Totaal zichtbaar</span>
+            <strong>EUR {{ number_format($totalen['totaal'], 2, ',', '.') }}</strong>
+        </article>
+        <article>
+            <span>Betaald</span>
+            <strong>EUR {{ number_format($totalen['betaald'], 2, ',', '.') }}</strong>
+        </article>
+        <article>
+            <span>Openstaand</span>
+            <strong>EUR {{ number_format($totalen['open'], 2, ',', '.') }}</strong>
+            <small>{{ $totalen['openAantal'] }} open betaling(en)</small>
+        </article>
+    </section>
+
     <div class="payments-toolbar mb-3">
         <form method="get" action="{{ route('betalingen.index') }}" class="row g-2 align-items-end">
-            <div class="col-md-9">
+            <div class="col-md-4">
                 <label for="zoekterm" class="form-label mb-1">Zoekterm</label>
                 <input id="zoekterm" name="zoekterm" type="search" value="{{ $zoekterm }}" class="form-control" maxlength="255">
             </div>
-            <div class="col-md-3 d-grid">
+            <div class="col-md-3">
+                <label for="status" class="form-label mb-1">Status</label>
+                <select id="status" name="status" class="form-select">
+                    <option value="">Alle statussen</option>
+                    @foreach ($statussen as $status)
+                        <option value="{{ $status }}" @selected($geselecteerdeStatus === $status)>{{ $status }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="betaalmethode" class="form-label mb-1">Betaalmethode</label>
+                <select id="betaalmethode" name="betaalmethode" class="form-select">
+                    <option value="">Alle methodes</option>
+                    @foreach ($betaalmethodes as $betaalmethode)
+                        <option value="{{ $betaalmethode }}" @selected($geselecteerdeBetaalmethode === $betaalmethode)>{{ $betaalmethode }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
                 <button type="submit" class="btn btn-primary">Zoeken</button>
             </div>
+            @if ($zoekterm !== '' || $geselecteerdeStatus !== '' || $geselecteerdeBetaalmethode !== '')
+                <div class="col-12">
+                    <a class="payments-reset-link" href="{{ route('betalingen.index') }}">Filters wissen</a>
+                </div>
+            @endif
         </form>
     </div>
 

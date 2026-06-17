@@ -19,13 +19,17 @@ class BetalingController extends Controller
     public function index(Request $request): View
     {
         $zoekterm = trim((string) $request->query('zoekterm', ''));
+        $geselecteerdeStatus = trim((string) $request->query('status', ''));
+        $geselecteerdeBetaalmethode = trim((string) $request->query('betaalmethode', ''));
         $betalingen = collect();
 
         try {
-            $betalingen = $this->getBetalingen($zoekterm);
+            $betalingen = $this->getBetalingen($zoekterm, $geselecteerdeStatus, $geselecteerdeBetaalmethode);
 
             $this->logger()->info('Betalingsoverzicht succesvol opgehaald.', [
                 'zoekterm' => $zoekterm ?: 'geen',
+                'status' => $geselecteerdeStatus ?: 'alle',
+                'betaalmethode' => $geselecteerdeBetaalmethode ?: 'alle',
                 'aantal' => $betalingen->count(),
             ]);
         } catch (Throwable $exception) {
@@ -38,7 +42,12 @@ class BetalingController extends Controller
 
         return view('betalingen.index', [
             'betalingen' => $betalingen,
+            'betaalmethodes' => $this->betaalmethodes(),
+            'statussen' => $this->statussen(),
+            'totalen' => $this->berekenTotalen($betalingen),
             'zoekterm' => $zoekterm,
+            'geselecteerdeStatus' => $geselecteerdeStatus,
+            'geselecteerdeBetaalmethode' => $geselecteerdeBetaalmethode,
         ]);
     }
 
@@ -106,7 +115,20 @@ class BetalingController extends Controller
         }
     }
 
-    private function getBetalingen(string $zoekterm): Collection
+    private function getBetalingen(string $zoekterm, string $status, string $betaalmethode): Collection
+    {
+        if (DB::getDriverName() === 'mysql') {
+            return collect(DB::select('CALL sp_get_betalingen_overzicht(?, ?, ?)', [
+                $zoekterm,
+                $status,
+                $betaalmethode,
+            ]));
+        }
+
+        return $this->getBetalingenViaQueryBuilder($zoekterm, $status, $betaalmethode);
+    }
+
+    private function getBetalingenViaQueryBuilder(string $zoekterm, string $status, string $betaalmethode): Collection
     {
         $query = DB::table('betalingen as b')
             ->select([
@@ -132,10 +154,31 @@ class BetalingController extends Controller
             });
         }
 
+        if ($status !== '') {
+            $query->where('b.Status', $status);
+        }
+
+        if ($betaalmethode !== '') {
+            $query->where('b.Betaalmethode', $betaalmethode);
+        }
+
         return $query
             ->orderByDesc('b.DatumAangemaakt')
             ->orderByDesc('b.Id')
             ->get();
+    }
+
+    /**
+     * @return array{totaal: float, betaald: float, open: float, openAantal: int}
+     */
+    private function berekenTotalen(Collection $betalingen): array
+    {
+        return [
+            'totaal' => (float) $betalingen->sum('Bedrag'),
+            'betaald' => (float) $betalingen->where('Status', 'Betaald')->sum('Bedrag'),
+            'open' => (float) $betalingen->where('Status', 'Open')->sum('Bedrag'),
+            'openAantal' => $betalingen->where('Status', 'Open')->count(),
+        ];
     }
 
     private function betalingRedenBestaat(int|string $klantId, string $reden): bool
