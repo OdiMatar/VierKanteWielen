@@ -486,7 +486,7 @@ h3,
 .data-table {
     --bs-table-bg: transparent;
     --bs-table-hover-bg: #f7fbff;
-    min-width: 900px;
+    min-width: 820px;
 }
 
 .data-table thead th {
@@ -540,9 +540,21 @@ h3,
     color: #08735e;
 }
 
-.payments-id {
-    color: #7188a6;
+.payments-number {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 104px;
+}
+
+.payments-number span {
+    color: #11203d;
     font-weight: 800;
+}
+
+.payments-number small,
+.payments-customer small {
+    color: #7188a6;
+    font-size: 0.82rem;
 }
 
 .payments-customer {
@@ -571,11 +583,14 @@ h3,
     font-weight: 800;
 }
 
-.payments-email,
-.payments-date {
-    color: #60738f;
-    font-size: 0.9rem;
+.payments-amount {
+    text-align: right;
     white-space: nowrap;
+}
+
+.payments-customer strong,
+.payments-customer small {
+    display: block;
 }
 
 .payments-method {
@@ -619,8 +634,9 @@ h3,
 }
 
 .payments-reason {
-    min-width: 220px;
+    min-width: 260px;
     color: #45556f;
+    line-height: 1.45;
 }
 
 .app-footer {
@@ -719,6 +735,7 @@ h3,
     .payments-table tbody td {
         display: flex;
         justify-content: space-between;
+        align-items: flex-start;
         gap: 1rem;
         padding: 0;
         border: 0;
