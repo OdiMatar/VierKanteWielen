@@ -337,6 +337,197 @@ h3,
     color: #7188a6;
 }
 
+.payments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(219, 230, 240, 0.9);
+    border-radius: 0.9rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(238, 248, 245, 0.94));
+    box-shadow: 0 12px 28px rgba(12, 35, 66, 0.08);
+}
+
+.payments-kicker {
+    margin-bottom: 0.35rem;
+    color: #0a7c9f;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.payments-total {
+    min-width: 150px;
+    padding: 0.9rem 1rem;
+    border-radius: 0.75rem;
+    background: #11203d;
+    color: #ffffff;
+    display: grid;
+    place-content: center;
+    text-align: center;
+}
+
+.payments-total span {
+    color: #c8e6ff;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.payments-total strong {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.payments-panel,
+.payments-toolbar,
+.payments-table-wrap {
+    border: 1px solid rgba(219, 230, 240, 0.95);
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 24px rgba(12, 35, 66, 0.07);
+}
+
+.payments-panel,
+.payments-toolbar {
+    padding: 1rem;
+}
+
+.payments-panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+.payments-panel-heading h2 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.payments-panel .form-label,
+.payments-toolbar .form-label {
+    color: #45556f;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.payments-panel .form-control,
+.payments-panel .form-select,
+.payments-toolbar .form-control {
+    border-color: #cfdeea;
+    border-radius: 0.7rem;
+}
+
+.payments-submit {
+    border-radius: 0.7rem;
+    font-weight: 800;
+}
+
+.payments-table-wrap {
+    overflow-x: auto;
+}
+
+.payments-table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: #f7fbff;
+}
+
+.payments-table thead th {
+    padding: 0.85rem 1rem;
+    background: #f4f8fb;
+    color: #45556f;
+    border-bottom: 1px solid #dbe6f0;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.payments-table tbody td {
+    padding: 0.95rem 1rem;
+    border-color: #e7eef5;
+    color: #243852;
+    vertical-align: middle;
+}
+
+.payments-id {
+    color: #7188a6;
+    font-weight: 800;
+}
+
+.payments-customer {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 190px;
+}
+
+.payments-customer span {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    background: #e8f7f3;
+    color: #08735e;
+    font-weight: 800;
+}
+
+.payments-customer strong,
+.payments-amount {
+    color: #11203d;
+    font-weight: 800;
+}
+
+.payments-method {
+    display: inline-flex;
+    padding: 0.32rem 0.6rem;
+    border-radius: 999px;
+    background: #f4f8fb;
+    color: #45556f;
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+.payments-status {
+    display: inline-flex;
+    min-width: 74px;
+    justify-content: center;
+    padding: 0.34rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.payments-status.is-paid {
+    background: #dff8ed;
+    color: #0b6b4f;
+}
+
+.payments-status.is-open {
+    background: #fff3cd;
+    color: #8a5a00;
+}
+
+.payments-status.is-failed {
+    background: #fde2e2;
+    color: #9b1c1c;
+}
+
+.payments-status.is-neutral {
+    background: #eef2f7;
+    color: #45556f;
+}
+
+.payments-reason {
+    min-width: 220px;
+    color: #45556f;
+}
+
 .app-footer {
     margin-top: auto;
     border-top: 1px solid rgba(17, 32, 61, 0.08);
@@ -391,5 +582,41 @@ h3,
 
     .app-footer-inner {
         flex-direction: column;
+    }
+
+    .payments-header {
+        flex-direction: column;
+    }
+
+    .payments-total {
+        place-content: start;
+        text-align: left;
+    }
+
+    .payments-table thead {
+        display: none;
+    }
+
+    .payments-table tbody tr {
+        display: grid;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-bottom: 1px solid #e7eef5;
+    }
+
+    .payments-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0;
+        border: 0;
+    }
+
+    .payments-table tbody td::before {
+        content: attr(data-label);
+        color: #7188a6;
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
     }
 }
