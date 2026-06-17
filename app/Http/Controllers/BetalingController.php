@@ -112,6 +112,7 @@ class BetalingController extends Controller
             ->select([
                 'b.Id',
                 'u.name as KlantNaam',
+                'u.email as KlantEmail',
                 'b.Bedrag',
                 'b.Betaalmethode',
                 'b.Status',
@@ -124,6 +125,7 @@ class BetalingController extends Controller
         if ($zoekterm !== '') {
             $query->where(function ($query) use ($zoekterm): void {
                 $query->where('u.name', 'like', "%{$zoekterm}%")
+                    ->orWhere('u.email', 'like', "%{$zoekterm}%")
                     ->orWhere('b.Betaalmethode', 'like', "%{$zoekterm}%")
                     ->orWhere('b.Status', 'like', "%{$zoekterm}%")
                     ->orWhere('b.Opmerking', 'like', "%{$zoekterm}%");

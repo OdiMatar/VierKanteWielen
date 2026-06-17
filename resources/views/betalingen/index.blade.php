@@ -46,10 +46,12 @@
                 <tr>
                     <th>Nr.</th>
                     <th>Klantnaam</th>
+                    <th>E-mailadres</th>
                     <th>Bedrag</th>
                     <th>Betaalmethode</th>
                     <th>Status</th>
                     <th>Reden</th>
+                    <th>Datum</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,14 +72,16 @@
                                 <strong>{{ $betaling->KlantNaam }}</strong>
                             </div>
                         </td>
+                        <td class="payments-email" data-label="E-mail">{{ $betaling->KlantEmail }}</td>
                         <td class="payments-amount" data-label="Bedrag">EUR {{ number_format((float) $betaling->Bedrag, 2, ',', '.') }}</td>
                         <td data-label="Methode"><span class="payments-method">{{ $betaling->Betaalmethode }}</span></td>
                         <td data-label="Status"><span class="payments-status {{ $statusClass }}">{{ $betaling->Status }}</span></td>
                         <td class="payments-reason" data-label="Reden">{{ $betaling->Opmerking }}</td>
+                        <td class="payments-date" data-label="Datum">{{ \Illuminate\Support\Carbon::parse($betaling->DatumAangemaakt)->format('d-m-Y H:i') }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">Geen betalingen beschikbaar</td>
+                        <td colspan="8" class="text-center text-muted py-4">Geen betalingen beschikbaar</td>
                     </tr>
                 @endforelse
             </tbody>

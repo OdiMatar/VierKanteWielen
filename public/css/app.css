@@ -455,7 +455,7 @@ h3,
 .data-table {
     --bs-table-bg: transparent;
     --bs-table-hover-bg: #f7fbff;
-    min-width: 760px;
+    min-width: 900px;
 }
 
 .data-table thead th {
@@ -538,6 +538,13 @@ h3,
 .payments-amount {
     color: #11203d;
     font-weight: 800;
+}
+
+.payments-email,
+.payments-date {
+    color: #60738f;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .payments-method {
